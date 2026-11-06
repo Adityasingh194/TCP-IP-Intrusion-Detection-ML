@@ -20,17 +20,16 @@ def split_features_target(df):
 
 
 def train_test_split_data(X, y):
-    """80/20 split with the notebook's seed, so the test set matches the presentation."""
+    """80/20 train/test split with a fixed seed, so results are reproducible."""
     return train_test_split(X, y, test_size=config.TEST_SIZE, random_state=config.SEED)
 
 
 def build_preprocessor(scale=True):
     """One-hot encode protocol_type/service/flag, then optionally standardise.
 
-    This is the notebook's ``pd.get_dummies`` -> ``StandardScaler`` step packaged
-    as a fitted scikit-learn object, so the same transform can be applied to new
-    traffic. Categories never seen in training (e.g. ``tftp_u`` in
-    Test_data.csv) are encoded as all zeros instead of raising an error.
+    Packaged as a fitted scikit-learn object, so the same transform can be
+    applied to new traffic. Categories never seen in training (e.g. ``tftp_u``
+    in Test_data.csv) are encoded as all zeros instead of raising an error.
 
     Tree models get ``scale=False``: they do not need scaling, and unscaled
     thresholds (``src_bytes <= 28.5``) are readable in the tree plot.

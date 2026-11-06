@@ -22,7 +22,7 @@ def compute_metrics(y_true, y_pred, y_prob):
 
 
 def youden_threshold(y_true, y_prob):
-    """Threshold that maximises Youden's J = TPR - FPR (as on the tuning slide)."""
+    """Threshold that maximises Youden's J = TPR - FPR."""
     fpr, tpr, thresholds = roc_curve(y_true, y_prob)
     finite = np.isfinite(thresholds)
     best = np.argmax((tpr - fpr)[finite])

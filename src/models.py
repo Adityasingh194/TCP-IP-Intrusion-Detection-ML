@@ -51,7 +51,7 @@ def sklearn_models():
 
 
 # --------------------------------------------------------------------------
-# PyTorch feed-forward network (TunableNN in the notebook)
+# PyTorch feed-forward network
 # --------------------------------------------------------------------------
 class IntrusionNet(nn.Module):
     """Linear -> ReLU -> Linear -> ReLU -> Linear -> Sigmoid."""

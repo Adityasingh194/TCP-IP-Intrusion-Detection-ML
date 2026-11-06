@@ -21,7 +21,7 @@ SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"]
 
 CLASS_COLORS = {"Normal": SERIES[0], "Anomaly": SERIES[1]}
 
-# Original models first, then the two added in this repo.
+# Fixed display order (and colour) for each model across all figures.
 MODEL_ORDER = [
     "Logistic Regression",
     "Neural Network (baseline)",

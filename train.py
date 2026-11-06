@@ -2,7 +2,7 @@
 
 Models
   * Logistic Regression          - GridSearchCV (5-fold) over C
-  * Neural Network (baseline)    - untuned config from the presentation, threshold 0.5
+  * Neural Network (baseline)    - untuned starting configuration, threshold 0.5
   * Neural Network (tuned)       - grid search on a validation split + tuned threshold
   * Decision Tree                - GridSearchCV (5-fold)
   * Random Forest                - GridSearchCV (5-fold)

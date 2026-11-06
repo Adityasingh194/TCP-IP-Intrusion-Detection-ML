@@ -5,7 +5,6 @@ a simulated US Air Force LAN is classified as **normal** or **anomaly** (attack)
 The project compares a logistic regression baseline, a PyTorch neural network
 (before and after tuning), a decision tree and a random forest.
 
-[![Open the original notebook in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/16d_vbC5R4-PEPDZLl6fdbAn80bDaMbS4?usp=sharing)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.2%2B-orange)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red)
@@ -31,8 +30,8 @@ All models are scored on the same **5,039 held-out connections** (2,705 normal,
 | Logistic Regression | 97.46% | 97.87% | 96.62% | 97.24% | 0.99640 |
 | Neural Network (baseline) | 99.15% | 99.14% | 99.01% | 99.08% | 0.99941 |
 | Neural Network (tuned) | 99.27% | 99.53% | 98.89% | 99.20% | 0.99937 |
-| Decision Tree *(new)* | 99.70% | 99.79% | **99.57%** | 99.68% | 0.99751 |
-| **Random Forest** *(new)* | **99.72%** | **99.96%** | 99.44% | **99.70%** | **0.99996** |
+| Decision Tree | 99.70% | 99.79% | **99.57%** | 99.68% | 0.99751 |
+| **Random Forest** | **99.72%** | **99.96%** | 99.44% | **99.70%** | **0.99996** |
 
 *Anomaly is the positive class. Precision measures how often an alert is a real
 attack. Recall measures how many attacks are caught.*
@@ -69,8 +68,6 @@ attack. Recall measures how many attacks are caught.*
 │   ├── Train_data.csv          # 25,192 labelled connections (used for training + testing)
 │   ├── Test_data.csv           # 22,544 unlabelled connections (scored by predict.py)
 │   └── README.md               # feature dictionary
-├── notebooks/
-│   └── original_colab_notebook.ipynb   # the notebook behind the presentation
 ├── src/
 │   ├── config.py               # paths, seeds, hyperparameter grids
 │   ├── data.py                 # loading, train/test split, one-hot + scaling
@@ -133,7 +130,7 @@ the full feature dictionary.
 | Step | Detail |
 |---|---|
 | Target | `normal` → 0, `anomaly` → 1 |
-| Split | 80/20 train/test, `random_state=12`. This is the same 5,039-row test set as the notebook |
+| Split | 80/20 train/test (`random_state=12`), giving a 5,039-row test set |
 | One-hot encoding | `protocol_type` (3), `service` (66), `flag` (11) → 80 binary columns, **118 features** in total |
 | Scaling | `StandardScaler` for logistic regression and the neural network. Trees use raw values |
 | PCA | explored, then **not used** (see below) |
@@ -152,10 +149,10 @@ spread too evenly for PCA to compress the data without losing signal.
 | Model | Architecture | How it was tuned |
 |---|---|---|
 | Logistic Regression | σ(wᵀx + b) | 5-fold `GridSearchCV` over `C` |
-| Neural Network (baseline) | 118 → 20 → 10 → 1, ReLU, sigmoid output, BCE loss, Adam (lr 0.001, batch 64) | untuned "before tuning" configuration, threshold 0.5 |
+| Neural Network (baseline) | 118 → 20 → 10 → 1, ReLU, sigmoid output, BCE loss, Adam (lr 0.001, batch 64) | untuned starting configuration, threshold 0.5 |
 | Neural Network (tuned) | 118 → h1 → h2 → 1, same layers | grid search over lr {0.01, 0.001} × h1 {20, 50} × h2 {10, 25} × batch {32, 64} on a validation split, then **threshold tuning** with Youden's J |
-| **Decision Tree** *(new)* | CART | 5-fold `GridSearchCV` over criterion, max depth and min samples per leaf |
-| **Random Forest** *(new)* | bagged ensemble of CART trees | 5-fold `GridSearchCV` over number of trees, max depth and min samples per leaf |
+| Decision Tree | CART | 5-fold `GridSearchCV` over criterion, max depth and min samples per leaf |
+| Random Forest | bagged ensemble of CART trees | 5-fold `GridSearchCV` over number of trees, max depth and min samples per leaf |
 
 Every neural network is trained for 10 epochs. All grid searches score on F1 for
 the anomaly class. Every model is evaluated on the same held-out test set, which
@@ -207,22 +204,6 @@ port scans. The top three levels of the tuned decision tree:
 - **Binary labels only.** The models say *whether* a connection is an attack,
   not which type (DoS, probe, R2L, U2R).
 
-## Changes from the original notebook
-
-The [original Colab notebook](notebooks/original_colab_notebook.ipynb) is included
-unchanged. The scripts here build on it in four ways:
-
-1. **No tuning on the test set.** The notebook chose the network's
-   hyperparameters and decision threshold by looking at test-set accuracy. Here,
-   both are chosen on a validation split carved out of the training data, and
-   the scikit-learn models use 5-fold cross-validation. This makes the reported
-   test scores an honest estimate of performance on new traffic.
-2. **Logistic regression uses all 118 features.** In the notebook it was trained
-   on 10 PCA components.
-3. **Two new models**: a decision tree and a random forest.
-4. **Reusable models.** Preprocessing and model are saved together, and
-   `predict.py` can label `Test_data.csv` or any new traffic.
-
 ## Conclusion
 
 Military networks are prime targets, and static rules cannot keep up with
@@ -233,4 +214,3 @@ networks, such as power grids, banks and hospitals.
 ## Links
 
 - Dataset: <https://www.kaggle.com/datasets/sampadab17/network-intrusion-detection>
-- Original Colab notebook: <https://colab.research.google.com/drive/16d_vbC5R4-PEPDZLl6fdbAn80bDaMbS4?usp=sharing>
