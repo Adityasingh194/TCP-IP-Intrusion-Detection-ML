@@ -1,0 +1,42 @@
+{
+  "Logistic Regression": {
+    "params": {
+      "C": 10
+    },
+    "threshold": 0.5
+  },
+  "Neural Network (baseline)": {
+    "params": {
+      "lr": 0.001,
+      "hidden1": 20,
+      "hidden2": 10,
+      "batch_size": 64
+    },
+    "threshold": 0.5
+  },
+  "Neural Network (tuned)": {
+    "params": {
+      "lr": 0.001,
+      "hidden1": 20,
+      "hidden2": 10,
+      "batch_size": 32
+    },
+    "threshold": 0.5148348212242126
+  },
+  "Decision Tree": {
+    "params": {
+      "criterion": "entropy",
+      "max_depth": 10,
+      "min_samples_leaf": 1
+    },
+    "threshold": 0.5
+  },
+  "Random Forest": {
+    "params": {
+      "max_depth": 20,
+      "min_samples_leaf": 1,
+      "n_estimators": 100
+    },
+    "threshold": 0.5
+  }
+}
